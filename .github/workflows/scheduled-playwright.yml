@@ -1,0 +1,32 @@
+```yaml
+   name: Scheduled Playwright Tests
+
+   on:
+     schedule:
+       # Voer iedere dag om 07:00 UTC uit (pas cron aan naar wens)
+       - cron: "0 7 * * *"
+     workflow_dispatch:
+       # Hiermee kun je de workflow ook handmatig starten vanuit GitHub
+
+   jobs:
+     test:
+       runs-on: ubuntu-latest
+
+       steps:
+         - name: Checkout repository
+           uses: actions/checkout@v4
+
+         - name: Setup Node.js
+           uses: actions/setup-node@v4
+           with:
+             node-version: '20'
+
+         - name: Install dependencies
+           run: npm install
+
+         - name: Install Playwright browsers
+           run: npx playwright install --with-deps
+
+         - name: Run Playwright tests
+           run: npx playwright test
+   ```
