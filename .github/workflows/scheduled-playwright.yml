@@ -1,4 +1,3 @@
-```yaml
    name: Scheduled Playwright Tests
 
    on:
@@ -29,4 +28,3 @@
 
          - name: Run Playwright tests
            run: npx playwright test
-   ```
