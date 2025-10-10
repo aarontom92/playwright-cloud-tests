@@ -8,10 +8,11 @@
        # Hiermee kun je de workflow ook handmatig starten vanuit GitHub
 
    jobs:
-     test:
-       runs-on: ubuntu-latest
+    test:
+      # Pin naar Ubuntu 22.04 zodat Playwright's --with-deps script de juiste pakketten vindt.
+      runs-on: ubuntu-22.04
 
-       steps:
+      steps:
          - name: Checkout repository
            uses: actions/checkout@v4
 
