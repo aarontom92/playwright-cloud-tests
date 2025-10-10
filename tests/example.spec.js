@@ -19,7 +19,7 @@ const ninePM = 29;
 // Eerste test. Probeert de baan van over 14 dagen te pakken om 20:00
 test("test1", async ({ page }) => {
   const currentDate = new Date();
-  currentDate.setDate(currentDate.getDate() + 14);
+  currentDate.setDate(currentDate.getDate() + 0);
   const day = String(currentDate.getDate()).padStart(2, "0");
   const url = `https://tesqua.aqqo.com/planboard?date=${currentDate.getFullYear()}-${
     currentDate.getMonth() + 1
