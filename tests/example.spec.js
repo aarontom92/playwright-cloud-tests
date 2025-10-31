@@ -16,7 +16,7 @@ const sevenPM = 25;
 const eightPM = 27;
 const ninePM = 29;
 
-// Helper: Try to click the first available court/time across 3 days (0..2),
+// Helper: Try to click the first available court/time across 7 days (0..6),
 // 3 times (sevenPM, eightPM, ninePM) and 3 courts (as provided locators).
 // Returns the combo used if successful.
 /**
@@ -25,7 +25,7 @@ const ninePM = 29;
  */
 async function tryBookFirstAvailableSlot(page) {
   const timeOptions = [eightPM, ninePM, sevenPM];
-  for (const dayOffset of [0, 1, 2]) {
+  for (const dayOffset of [0, 1, 2, 3, 4, 5, 6]) {
     const date = new Date();
     date.setDate(date.getDate() + dayOffset);
     const day = String(date.getDate()).padStart(2, "0");
@@ -113,7 +113,7 @@ test("test1", async ({ page }) => {
   await page.locator("#public_user_id_23_1").click();
   await page
     .getByRole("listitem")
-    .filter({ hasText: "Marijke Westerduin" })
+    .filter({ hasText: "Paul Bosma" })
     .click();
   await page.waitForTimeout(1000);
   await page.getByRole("button", { name: "Volgende stap" }).click();
