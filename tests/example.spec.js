@@ -1,13 +1,22 @@
 // @ts-check
 const { test, expect } = require("@playwright/test");
 
-// usernames & passwords
-const usernameAaron = "arontom@hotmail.com";
-const passwordAaron = "Newbegin92!";
-const usernameReinier = "rt@westerduin.nl";
-const passwordReinier = "Timotheus007!";
+// usernames & passwords via environment (safe for public repos)
+// Avoid direct 'process' reference so @ts-check doesn't require Node types
+const ENV = /** @type {any} */ (globalThis).process?.env || {};
+const usernameAaron = ENV.PW_USER_AARON;
+const passwordAaron = ENV.PW_PASS_AARON;
+const usernameReinier = ENV.PW_USER_REINIER;
+const passwordReinier = ENV.PW_PASS_REINIER;
+
+if (!usernameAaron || !passwordAaron || !usernameReinier || !passwordReinier) {
+  throw new Error(
+    "Missing required env vars: PW_USER_AARON, PW_PASS_AARON, PW_USER_REINIER, PW_PASS_REINIER"
+  );
+}
 
 // tijdstippen
+const eightAM = 3;
 const threePM = 17;
 const fourPM = 19;
 const fivePM = 21;
@@ -51,7 +60,7 @@ async function logStep(label, fn) {
  * @returns {Promise<{ dayOffset: number, timeNth: number, court: number }>}
  */
 async function tryBookFirstAvailableSlot(page) {
-  const timeOptions = [eightPM, ninePM, sevenPM];
+  const timeOptions = [sevenPM, eightPM, ninePM];
   /** @type {Array<{ date: string, dayOffset: number, timeNth: number, court: number, step: string, error: string }>} */
   const attempts = [];
   const shortErr = (e) => {
@@ -70,11 +79,12 @@ async function tryBookFirstAvailableSlot(page) {
     const dateStr = `${date.getFullYear()}-${month}-${day}`;
     const url = `https://tesqua.aqqo.com/planboard?date=${dateStr}`;
     await page.goto(url);
+    await page.waitForTimeout(1000);
 
     for (const timeNth of timeOptions) {
       const courtLocators = [
         // Court 1
-        () => page.locator(`div:nth-child(${timeNth})`).first(),
+        () => page.locator(`.planboard-booking-raster > div:nth-child(${timeNth})`).first(),
         // Court 2
         () =>
           page
@@ -99,7 +109,7 @@ async function tryBookFirstAvailableSlot(page) {
         const loc = courtLocators[courtIndex]();
         // Step 1: try clicking the slot
         try {
-          await loc.click({ timeout: 1000 });
+          await loc.click({ timeout: 300 });
         } catch (e) {
           attempts.push({
             date: dateStr,
@@ -163,7 +173,9 @@ test("test1", async ({ page }) => {
   await page.getByRole("button", { name: "Inloggen" }).click();
   await page.getByRole("link", { name: "Toon Dag Weergave" }).click();
   // Try across 3 days x 3 times x 3 courts (includes clicking 'Reserveren')
-  await tryBookFirstAvailableSlot(page);
+  const selection = await tryBookFirstAvailableSlot(page);
+  // Map selected court (1,2,3) to base id (21,22,23)
+  const courtBaseId = 20 + selection.court;
   await page.waitForTimeout(2000);
   await logStep("Open voorkeuren-stap", async () => {
     await page
@@ -174,13 +186,13 @@ test("test1", async ({ page }) => {
   });
 
   await logStep("Selecteer speler 1: Ruth Hoving", async () => {
-    await page.locator("#public_user_id_23_0").click();
+    await page.locator(`#public_user_id_${courtBaseId}_0`).click();
     await page.getByRole("listitem").filter({ hasText: "Ruth Hoving" }).click();
   });
   await page.waitForTimeout(1000);
 
   await logStep("Selecteer speler 2: Paul Bosma", async () => {
-    await page.locator("#public_user_id_23_1").click();
+    await page.locator(`#public_user_id_${courtBaseId}_1`).click();
     await page
       .getByRole("listitem")
       .filter({ hasText: "Paul Bosma" })
