@@ -17,6 +17,12 @@ if (!usernameAaron || !passwordAaron || !usernameReinier || !passwordReinier) {
 
 // tijdstippen
 const eightAM = 3;
+const nineAM = 5;
+const tenAM = 7;
+const elevenAM = 9;
+const twelveAM = 11;
+const onePM = 13;
+const twoPM = 15;
 const threePM = 17;
 const fourPM = 19;
 const fivePM = 21;
@@ -53,14 +59,13 @@ async function logStep(label, fn) {
 }
 
 // Helper: Try to click the first available court/time across 7 days (0..6),
-// 3 times (sevenPM, eightPM, ninePM) and 3 courts (as provided locators).
+// switching time windows for weekdays vs weekends, and 3 courts (as provided locators).
 // Returns the combo used if successful.
 /**
  * @param {import('@playwright/test').Page} page
  * @returns {Promise<{ dayOffset: number, timeNth: number, court: number }>}
  */
 async function tryBookFirstAvailableSlot(page) {
-  const timeOptions = [sevenPM, eightPM, ninePM];
   /** @type {Array<{ date: string, dayOffset: number, timeNth: number, court: number, step: string, error: string }>} */
   const attempts = [];
   const shortErr = (e) => {
@@ -74,6 +79,11 @@ async function tryBookFirstAvailableSlot(page) {
   for (const dayOffset of [0, 1, 2, 3, 4, 5, 6]) {
     const date = new Date();
     date.setDate(date.getDate() + dayOffset);
+    const dayOfWeek = date.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    const timeOptions = isWeekend
+      ? [nineAM, tenAM, elevenAM, twelveAM] // Saturday/Sunday morning slots
+      : [sevenPM, eightPM, ninePM]; // Weekday evening slots
     const month = String(date.getMonth() + 1);
     const day = String(date.getDate()).padStart(2, "0");
     const dateStr = `${date.getFullYear()}-${month}-${day}`;
