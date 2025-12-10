@@ -201,11 +201,11 @@ test("test1", async ({ page }) => {
   });
   await page.waitForTimeout(1000);
 
-  await logStep("Selecteer speler 2: Paul Bosma", async () => {
+  await logStep("Selecteer speler 2: Reinier Westerduin", async () => {
     await page.locator(`#public_user_id_${courtBaseId}_1`).click();
     await page
       .getByRole("listitem")
-      .filter({ hasText: "Paul Bosma" })
+      .filter({ hasText: "Reinier Westerduin" })
       .click();
   });
   await page.waitForTimeout(1000);
