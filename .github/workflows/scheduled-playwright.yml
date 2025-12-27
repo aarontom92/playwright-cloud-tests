@@ -40,8 +40,8 @@ jobs:
           export TZ=Europe/Amsterdam
           HM=$(date +%H%M)
           echo "Local time Europe/Amsterdam: $(date) (HM=$HM)"
-          if [ "$HM" -lt 630 ] || { [ "$HM" -ge 1800 ] && [ "$HM" -lt 2100 ]; }; then
-            echo "Within quiet hours (00:00-06:30, 18:00-21:00). Skipping heavy steps."
+          if [ "$HM" -lt 630 ]; then
+            echo "Within quiet hours (00:00-06:30). Skipping heavy steps."
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
 

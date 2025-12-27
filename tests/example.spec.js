@@ -76,14 +76,14 @@ async function tryBookFirstAvailableSlot(page) {
       return "Unknown error";
     }
   };
-  for (const dayOffset of [0, 1, 2, 3, 4, 5, 6]) {
+  for (const dayOffset of [1, 2, 3, 4, 5, 6]) {
     const date = new Date();
     date.setDate(date.getDate() + dayOffset);
     const dayOfWeek = date.getDay();
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
     const timeOptions = isWeekend
-      ? [nineAM, tenAM, elevenAM, twelveAM] // Saturday/Sunday morning slots
-      : [sevenPM, eightPM, ninePM]; // Weekday evening slots
+      ? [nineAM, tenAM, elevenAM, twelveAM, onePM, twoPM, threePM, fourPM, fivePM] // Saturday/Sunday morning slots
+      : [nineAM, tenAM, elevenAM, twelveAM, onePM, twoPM, threePM, fourPM, fivePM, eightPM, ninePM]; // Weekday evening slots
     const month = String(date.getMonth() + 1);
     const day = String(date.getDate()).padStart(2, "0");
     const dateStr = `${date.getFullYear()}-${month}-${day}`;
