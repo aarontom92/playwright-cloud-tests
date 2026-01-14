@@ -94,7 +94,7 @@ async function tryBookFirstAvailableSlot(page) {
       return "Unknown error";
     }
   };
-  for (const dayOffset of [0, 1, 2, 3, 4, 5, 6, 7]) {
+  for (const dayOffset of [0, 1, 2, 3, 4, 5]) {
     const date = new Date();
     date.setDate(date.getDate() + dayOffset);
     const dayOfWeek = date.getDay();
