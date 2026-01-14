@@ -31,6 +31,23 @@ const sevenPM = 25;
 const eightPM = 27;
 const ninePM = 29;
 
+const timeNthToHour = new Map([
+  [eightAM, 8],
+  [nineAM, 9],
+  [tenAM, 10],
+  [elevenAM, 11],
+  [twelveAM, 12],
+  [onePM, 13],
+  [twoPM, 14],
+  [threePM, 15],
+  [fourPM, 16],
+  [fivePM, 17],
+  [sixPM, 18],
+  [sevenPM, 19],
+  [eightPM, 20],
+  [ninePM, 21],
+]);
+
 // Simple step logger to make GH Actions output clearer
 /**
  * @template T
@@ -58,8 +75,9 @@ async function logStep(label, fn) {
   }
 }
 
-// Helper: Try to click the first available court/time across 7 days (0..6),
+// Helper: Try to click the first available court/time across 8 days (0..7),
 // switching time windows for weekdays vs weekends, and 3 courts (as provided locators).
+// Day 0 is only eligible if the slot is at least 3 hours from now.
 // Returns the combo used if successful.
 /**
  * @param {import('@playwright/test').Page} page
@@ -76,14 +94,67 @@ async function tryBookFirstAvailableSlot(page) {
       return "Unknown error";
     }
   };
-  for (const dayOffset of [1, 2, 3, 4, 5, 6, 7]) {
+  for (const dayOffset of [0, 1, 2, 3, 4, 5, 6, 7]) {
     const date = new Date();
     date.setDate(date.getDate() + dayOffset);
     const dayOfWeek = date.getDay();
-    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-    const timeOptions = isWeekend
-      ? [nineAM, tenAM, elevenAM, twelveAM, onePM, twoPM, threePM, fourPM, fivePM] // Saturday/Sunday morning slots
-      : [fourPM, eightPM, ninePM]; // Weekday evening slots
+    const timeOptionsByDay = new Map([
+      [
+        0,
+        [
+          nineAM,
+          tenAM,
+          elevenAM,
+          twelveAM,
+          onePM,
+          twoPM,
+          threePM,
+          fourPM,
+          fivePM,
+        ],
+      ], // Sunday
+      [1, [eightPM, ninePM]], // Monday
+      [
+        2,
+        [elevenAM, twelveAM, onePM, twoPM, threePM, fourPM, eightPM, ninePM],
+      ], // Tuesday
+      [
+        3,
+        [elevenAM, twelveAM, onePM, twoPM, threePM, fourPM, eightPM, ninePM],
+      ], // Wednesday
+      [4, [eightPM, ninePM]], // Thursday
+      [
+        5,
+        [
+          nineAM,
+          tenAM,
+          elevenAM,
+          twelveAM,
+          onePM,
+          twoPM,
+          threePM,
+          fourPM,
+          fivePM,
+          eightPM,
+          ninePM,
+        ],
+      ], // Friday
+      [
+        6,
+        [
+          nineAM,
+          tenAM,
+          elevenAM,
+          twelveAM,
+          onePM,
+          twoPM,
+          threePM,
+          fourPM,
+          fivePM,
+        ],
+      ], // Saturday
+    ]);
+    const timeOptions = timeOptionsByDay.get(dayOfWeek) || [];
     const month = String(date.getMonth() + 1);
     const day = String(date.getDate()).padStart(2, "0");
     const dateStr = `${date.getFullYear()}-${month}-${day}`;
@@ -92,6 +163,16 @@ async function tryBookFirstAvailableSlot(page) {
     await page.waitForTimeout(1000);
 
     for (const timeNth of timeOptions) {
+      if (dayOffset === 0) {
+        const slotHour = timeNthToHour.get(timeNth);
+        if (slotHour !== undefined) {
+          const slotTime = new Date(date);
+          slotTime.setHours(slotHour, 0, 0, 0);
+          if (slotTime.getTime() - Date.now() < 4 * 60 * 60 * 1000) {
+            continue;
+          }
+        }
+      }
       const courtLocators = [
         // Court 1
         () => page.locator(`.planboard-booking-raster > div:nth-child(${timeNth})`).first(),
