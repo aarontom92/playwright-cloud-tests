@@ -273,11 +273,11 @@ test("test1", async ({ page }) => {
   });
   await page.waitForTimeout(1000);
 
-  await logStep("Selecteer speler 2: Harmen Westerduin", async () => {
+  await logStep("Selecteer speler 2: Vincent Lengkeek", async () => {
     await page.locator(`#public_user_id_${courtBaseId}_1`).click();
     await page
       .getByRole("listitem")
-      .filter({ hasText: "Harmen Westerduin" })
+      .filter({ hasText: "Vincent Lengkeek" })
       .click();
   });
   await page.waitForTimeout(1000);
