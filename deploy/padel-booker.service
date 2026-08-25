@@ -1,0 +1,20 @@
+[Unit]
+Description=Padel court availability checker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=padel
+Group=padel
+WorkingDirectory=/opt/playwright-cloud-tests
+EnvironmentFile=/etc/padel-booker.env
+Environment=REPO_DIR=/opt/playwright-cloud-tests
+Environment=LOG_DIR=/var/log/padel-booker
+ExecStart=/bin/bash /opt/playwright-cloud-tests/scripts/run-vps.sh
+
+# Keep the machine from stacking duplicate browser runs if one check takes longer than expected.
+TimeoutStartSec=4min
+
+[Install]
+WantedBy=multi-user.target
