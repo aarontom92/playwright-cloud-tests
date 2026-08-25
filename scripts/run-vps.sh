@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 set -u
 
+export TZ="${TZ:-Europe/Amsterdam}"
 REPO_DIR="${REPO_DIR:-/opt/playwright-cloud-tests}"
 LOG_DIR="${LOG_DIR:-/var/log/padel-booker}"
 mkdir -p "$LOG_DIR"
+
+HM="$(date +%H%M)"
+if [ "$HM" -lt 630 ]; then
+  echo "[$(date --iso-8601=seconds)] Quiet hours; skipping check"
+  exit 0
+fi
 
 STAMP="$(date +%Y%m%d-%H%M%S)"
 RUN_LOG="$LOG_DIR/run-$STAMP.log"
