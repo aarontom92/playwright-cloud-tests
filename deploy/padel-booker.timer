@@ -2,15 +2,10 @@
 Description=Run padel court checker every five minutes
 
 [Timer]
-OnCalendar=*-*-* 06:30:00
-OnCalendar=*-*-* 06:35:00
-OnCalendar=*-*-* 06:40:00
-OnCalendar=*-*-* 06:45:00
-OnCalendar=*-*-* 06:50:00
-OnCalendar=*-*-* 06:55:00
-OnCalendar=*-*-* 07..23:0/5:00
-Persistent=false
+OnBootSec=2min
+OnUnitActiveSec=5min
 AccuracySec=5s
+Persistent=false
 Unit=padel-booker.service
 
 [Install]
