@@ -4,7 +4,7 @@ This setup runs the Playwright court checker every five minutes using a systemd 
 
 ## Recommended server
 
-Ubuntu 22.04 or 24.04 with at least 2 GB RAM. Chromium/Playwright is the main reason to prefer 2 GB over a smaller VPS.
+Ubuntu 22.04 with at least 2 GB RAM. Chromium/Playwright is the main reason to prefer 2 GB over a smaller VPS, and Ubuntu 22.04 is the closest fit for this repository's older Playwright version.
 
 ## 1. Create a dedicated user and clone the repository
 
@@ -26,8 +26,11 @@ Install a current Node.js LTS release first, then:
 ```bash
 cd /opt/playwright-cloud-tests
 sudo -u padel npm ci
-sudo npx playwright install --with-deps chromium
+sudo npx playwright install-deps chromium
+sudo -u padel npx playwright install chromium
 ```
+
+The OS-level browser dependencies need root privileges, while the Chromium browser itself is installed as the `padel` user so the systemd service can find it later.
 
 ## 3. Configure credentials
 
