@@ -1,0 +1,12 @@
+[Unit]
+Description=Run padel court checker every five minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+AccuracySec=5s
+Persistent=false
+Unit=padel-booker.service
+
+[Install]
+WantedBy=timers.target
