@@ -94,7 +94,7 @@ async function tryBookFirstAvailableSlot(page) {
       return "Unknown error";
     }
   };
-  for (const dayOffset of [0, 1, 2, 3]) {
+  for (const dayOffset of [0, 1, 2, 3, 4, 5, 6, 7]) {
     const date = new Date();
     date.setDate(date.getDate() + dayOffset);
     const dayOfWeek = date.getDay();
@@ -102,39 +102,32 @@ async function tryBookFirstAvailableSlot(page) {
       [
         0,
         [
-          tenAM,
-          elevenAM,
-          twelveAM,
-          onePM,
-          twoPM
+          tenAM
         ],
       ], // Sunday
-      [1, [sevenPM, eightPM, ninePM]], // Monday
+      [1, [eightPM]], // Monday
       [
         2,
-        [sevenPM, eightPM, ninePM],
+        [eightPM],
       ], // Tuesday
       [
         3,
-        [sevenPM, eightPM, ninePM],
+        [eightPM],
       ], // Wednesday
-      [4, [sevenPM, eightPM, ninePM]], // Thursday
+      [4, [eightPM]], // Thursday
       [
         5,
         [
+          tenAM,
+          elevenAM,
           eightPM,
-          ninePM
         ],
       ], // Friday
       [
         6,
         [
-          nineAM,
           tenAM,
-          elevenAM,
-          twelveAM,
-          onePM,
-          twoPM
+          elevenAM
         ],
       ], // Saturday
     ]);
