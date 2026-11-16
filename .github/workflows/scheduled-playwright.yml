@@ -15,7 +15,6 @@ jobs:
   test:
     runs-on: ubuntu-22.04
 
-    # Moderne Playwright-browser
     container:
       image: mcr.microsoft.com/playwright:v1.64.1-noble
 
@@ -42,12 +41,15 @@ jobs:
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # Tijdelijke installatie zonder oude lockfile
       - name: Install modern Playwright
         if: steps.quiet.outputs.skip != 'true'
         run: |
           npm install --no-save --package-lock=false --no-audit --no-fund @playwright/test@1.64.1
           npx playwright --version
+
+      - name: Install Google Chrome
+        if: steps.quiet.outputs.skip != 'true'
+        run: npx playwright install chrome
 
       - name: Run Playwright tests
         if: steps.quiet.outputs.skip != 'true'
