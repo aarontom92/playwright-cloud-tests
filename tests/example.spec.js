@@ -274,9 +274,21 @@ test("test1", async ({ page }) => {
   await page.getByPlaceholder("E-mailadres").press("Tab");
   await page.getByPlaceholder("Wachtwoord").click();
   await page.getByPlaceholder("Wachtwoord").fill(passwordAaron);
+  
   await page.getByRole("button", { name: "Inloggen" }).click();
-  // Try across 3 days x 3 times x 3 courts (includes clicking 'Reserveren')
+
+  console.log("URL direct na login:", page.url());
+
+  // Controleer of de gebruiker daadwerkelijk is ingelogd
+  await page.waitForURL(
+  url => !url.pathname.startsWith("/auth/"),
+  { timeout: 15000 }
+  );
+
+  console.log("Login lijkt gelukt:", page.url());
+
   const selection = await tryBookFirstAvailableSlot(page);
+
   // Map selected court (1,2,3) to base id (21,22,23)
   const courtBaseId = 20 + selection.court;
   await page.waitForTimeout(2000);
