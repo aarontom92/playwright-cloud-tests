@@ -62,3 +62,12 @@ jobs:
       - name: Run Playwright tests
         if: steps.quiet.outputs.skip != 'true'
         run: npx playwright test
+
+      - name: Upload kalender screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kalender-debug
+          path: debug-kalender.png
+          if-no-files-found: ignore
+
