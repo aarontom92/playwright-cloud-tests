@@ -105,7 +105,7 @@ async function tryBookFirstAvailableSlot(page) {
           tenAM
         ],
       ], // Sunday
-      [1, [eightPM]], // Monday
+      [1, [threePM, eightPM]], // Monday
       [
         2,
         [eightPM],
