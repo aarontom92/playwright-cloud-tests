@@ -57,8 +57,9 @@ const config = {
   use: {
     ...devices["Desktop Chrome"],
     channel: "chrome",
-    headless: false,
+    headless: true,
   },
+},
 },
 
     //   {
