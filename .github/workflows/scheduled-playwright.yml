@@ -63,7 +63,7 @@ jobs:
         if: steps.quiet.outputs.skip != 'true'
         run: npx playwright test
 
-       - name: Upload kalender screenshot
+      - name: Upload kalender screenshot
         if: always()
         uses: actions/upload-artifact@v4
         with:
