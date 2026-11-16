@@ -135,7 +135,7 @@ async function tryBookFirstAvailableSlot(page) {
     const month = String(date.getMonth() + 1);
     const day = String(date.getDate()).padStart(2, "0");
     const dateStr = `${date.getFullYear()}-${month}-${day}`;
-    const url = `https://tesqua.aqqo.com/planboard?date=${dateStr}`;
+    const url = `https://tesqua.aqqo.com/planboard?date=${dateStr}&view=day`;
     await page.goto(url);
     await page.waitForTimeout(1000);
 
@@ -239,7 +239,6 @@ test("test1", async ({ page }) => {
   await page.getByPlaceholder("Wachtwoord").click();
   await page.getByPlaceholder("Wachtwoord").fill(passwordAaron);
   await page.getByRole("button", { name: "Inloggen" }).click();
-  await page.getByRole("link", { name: "Toon Dag Weergave" }).click();
   // Try across 3 days x 3 times x 3 courts (includes clicking 'Reserveren')
   const selection = await tryBookFirstAvailableSlot(page);
   // Map selected court (1,2,3) to base id (21,22,23)
