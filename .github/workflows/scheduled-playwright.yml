@@ -3,14 +3,14 @@ name: Scheduled Playwright Tests
 on:
   schedule:
     # Voer iedere dag om 07:00 UTC uit (pas cron aan naar wens)
-    - cron: "* * * * *"
+    - cron: "7/10 * * * *"
   workflow_dispatch:
     # Hiermee kun je de workflow ook handmatig starten vanuit GitHub
 
 # Cancel overlapping runs of this workflow
 concurrency:
   group: ${{ github.workflow }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   test:
