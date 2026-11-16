@@ -142,6 +142,11 @@ await page.goto(url, {
 });
 
 console.log("Kalender URL:", page.url());
+if (page.url().includes("/auth/")) {
+  throw new Error(
+    "Niet ingelogd! Kalender stuurt terug naar: " + page.url()
+  );
+}
 
 try {
   await page.locator(".planboard-booking-raster").first()
