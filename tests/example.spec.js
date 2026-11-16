@@ -213,7 +213,7 @@ console.log("Screenshot opgeslagen");
         const loc = courtLocators[courtIndex]();
         // Step 1: try clicking the slot
         try {
-          await loc.click({ timeout: 300 });
+          await loc.click({ timeout: 3000 });
         } catch (e) {
           attempts.push({
             date: dateStr,
