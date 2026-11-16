@@ -60,7 +60,6 @@ const config = {
     headless: true,
   },
 },
-},
 
     //   {
     //     name: 'firefox',
