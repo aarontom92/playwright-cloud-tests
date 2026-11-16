@@ -280,19 +280,31 @@ test("test1", async ({ page }) => {
   await page.getByPlaceholder("Wachtwoord").click();
   await page.getByPlaceholder("Wachtwoord").fill(passwordAaron);
   
-  await page.getByRole("button", { name: "Inloggen" }).click();
+  
+await page.getByRole("button", { name: "Inloggen" }).click();
 
-  console.log("URL direct na login:", page.url());
+// Geef de website tijd om de login te verwerken
+await page.waitForTimeout(3000);
 
-  // Controleer of de gebruiker daadwerkelijk is ingelogd
-  await page.waitForURL(
-  url => !url.pathname.startsWith("/auth/"),
-  { timeout: 15000 }
+console.log("URL na inloggen:", page.url());
+
+// Maak screenshot van het resultaat
+await page.screenshot({
+  path: "debug-login.png",
+  fullPage: true,
+});
+
+console.log("Login screenshot opgeslagen");
+
+// Stop als we nog op een authenticatiepagina staan
+if (new URL(page.url()).pathname.startsWith("/auth")) {
+  throw new Error(
+    "Login niet geslaagd. URL: " + page.url()
   );
+}
 
-  console.log("Login lijkt gelukt:", page.url());
+const selection = await tryBookFirstAvailableSlot(page);
 
-  const selection = await tryBookFirstAvailableSlot(page);
 
   // Map selected court (1,2,3) to base id (21,22,23)
   const courtBaseId = 20 + selection.court;
