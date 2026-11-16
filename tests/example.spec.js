@@ -136,8 +136,44 @@ async function tryBookFirstAvailableSlot(page) {
     const day = String(date.getDate()).padStart(2, "0");
     const dateStr = `${date.getFullYear()}-${month}-${day}`;
     const url = `https://tesqua.aqqo.com/planboard?date=${dateStr}&view=day`;
-    await page.goto(url);
-    await page.waitForTimeout(1000);
+
+await page.goto(url, {
+  waitUntil: "domcontentloaded",
+});
+
+console.log("Kalender URL:", page.url());
+
+try {
+  await page.locator(".planboard-booking-raster").first()
+    .waitFor({ state: "visible", timeout: 10000 });
+} catch {
+  console.log("Oude kalenderstructuur niet gevonden!");
+}
+
+console.log(
+  "Aantal booking rasters:",
+  await page.locator(".planboard-booking-raster").count()
+);
+
+console.log(
+  "Aantal tijdvakken:",
+  await page.locator(".planboard-booking-raster > div").count()
+);
+
+console.log(
+  "Aantal 08:00 elementen:",
+  await page.locator(
+    ".planboard-booking-raster > div:nth-child(3)"
+  ).count()
+);
+
+await page.screenshot({
+  path: "debug-kalender.png",
+  fullPage: true,
+});
+
+console.log("Screenshot opgeslagen");
+
 
     for (const timeNth of timeOptions) {
       if (dayOffset === 0) {
