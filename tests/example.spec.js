@@ -354,4 +354,3 @@ const selection = await tryBookFirstAvailableSlot(page);
   });
   await page.waitForTimeout(2000);
 });
-/*
